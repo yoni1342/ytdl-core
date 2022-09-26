@@ -3,10 +3,13 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 const ytdl = require("ytdl-core");
-const page = "https://v0ddf.sse.codesandbox.io/";
+// const page = "https://v0ddf.sse.codesandbox.io/";
+const page = "http://localhost:8080"
 const getSubtitles = require("youtube-captions-scraper").getSubtitles;
 const tester = {};
 const cors = require("cors");
+const https = require("https");
+
 
 app.use(
   cors({
@@ -97,7 +100,10 @@ app.get("/view", async (req, res) => {
       console.log(info.videoDetails.title, video.qualityLabel);
       tester[url + quality] =
         video.url + "&title=" + validate(info.videoDetails.title);
-      res.redirect(tester[url + quality]);
+      // res.redirect(tester[url + quality]);
+      https.get(video.url, (stream) => {
+        stream.pipe(res);
+    });
     })
     .catch((e) => {
       console.log("error getting info");
